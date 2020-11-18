@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package hermes.gcelsa.com.interceptor;
+option go_package = "rpc/interceptor";
+
+
+message Properties {
+ map <string,string> entry = 1;
+}
+
+message Response {
+  string msg = 1;
+}
+
+// Header 
+message Header {
+  // An unique identifier for a message. 
+  string messageId = 1;
+  // The timestamp of the message sent by the client.
+  int64 timestamp = 2;
+  // logic destination to which the message is being sent, such as a queue or a topic
+  string destination = 3;
+  // logic source to which the message is being received, such as a queue or a topic
+  string source = 4;
+  // specified expire time, in seconds
+  int64 expireTime = 5;
+}
+
+// Message proto wire.
+message Message {
+    // Message version
+    string version  = 1; 
+    // Message header
+    Header header = 2;
+    // Message properties
+    Properties properties = 3; 
+    // Message application data
+    bytes data = 4; 
+}
+
+// Interceptor service definition
+service Interceptor {
+  // Intercept
+  rpc Intercept(Message) returns (Response);
+}
